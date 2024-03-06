@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    ...
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenda de contacteeeee</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        background-color: #fdeca6;
+      }
+      img {
+        margin: auto;
+        display: block;
+      }
+      a {
+        text-align: center;
+        display: block;
+      }
+      span:hover {
+        color: red;
+      }
+      .partea_stanga {
+        float: left;
+        text-align: left;
+      }
+      .partea_dreapta {
+        float: right;
+        text-align: right;
+      }
+      .imput_style_dreapta {
+        height: 35px;
+        width: 220px;
+        background-color: rgb(250, 247, 216);
+        text-align: right;
+      }
+      .imput_style_stanga {
+        height: 35px;
+        width: 220px;
+        background-color: rgb(250, 247, 216);
+        text-align: left;
+      }
+      .litera {
+        cursor: pointer;
+      }
+      .centrare {
+        text-align: center;
+      }
+      .style_buton {
+        height: 35px;
+        width: 150px;
+        border-radius: 8px;
+        margin-right: 25px;
+      }
+      .style_buton:hover {
+        background-color: coral;
+      }
+      .ascunde_container {
+        display: none;
+      }
+      .afiseaza_container {
+        background-color: #f9e289;
+        display: block;
+      }
+      .div_casuta_cautare {
+        top: 100%;
+        display: flex;
+        white-space: pre;
+        justify-content: center;
+      }
+      .divCautare {
+        display: flex;
+        justify-content: center;
+      }
+      .centrareDivCasutaCautare {
+        position: relative;
+        text-align: center;
+        width: 400px;
+      }
+      .input_casuta {
+        box-sizing: border-box;
+        justify-content: center;
+        width: 100%;
+        border: 2px solid #070806;
+        background-image: url("lupa2.jpg");
+        background-position: right;
+        background-repeat: no-repeat;
+        border-radius: 5px;
+      }
+      .divSuprapus {
+        position: relative;
+      }
+      .div_sugestii {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+      }
+      .dropdown {
+        background-color: rgb(163, 163, 247);
+        border: 2px solid #070806;
+        border-radius: 5px;
+        width: 100%;
+      }
+      .dropdown:hover {
+        background-color: aquamarine;
+        cursor: pointer;
+      }
+    </style>
+    <script type="text/javascript">
+      let arrayPersoane = [];
+      let obiect = {};
+      class Persona {
+        constructor(nume, prenume, dataNasterii, nrTelefon, email, adresa) {
+          (this.nume = nume),
+            (this.prenume = prenume),
+            (this.dataNasterii = dataNasterii),
+            (this.nrTelefon = nrTelefon),
+            (this.email = email),
+            (this.adresa = adresa);
+        }
+      }
+      function submitForm() {
+        event.preventDefault();
+        let afisareEroareCamp = "";
+        obiect = new Persona(
+          document.getElementById("fnume").value,
+          document.getElementById("fprenume").value,
+          document.getElementById("fdataNasterii").value,
+          document.getElementById("fnrTelefon").value,
+          document.getElementById("femail").value,
+          document.getElementById("fadresa").value
+        );
+        console.log(obiect.nume);
+        let validareObiectPtMemorare = true;
+
+        let validareCamp = validareNumeSiPrenume(obiect.nume);
+        validareObiectPtMemorare &= validareCamp;
+        if (!validareCamp) {
+          afisareEroareCamp = " 'Nume' ";
+        }
+        validareCamp = validareNumeSiPrenume(obiect.prenume);
+        validareObiectPtMemorare &= validareCamp;
+        if (!validareCamp) {
+          afisareEroareCamp += " , 'Prenume' ";
+        }
+        validareCamp = validareDateExistenteInCampuri(obiect.dataNasterii);
+        validareObiectPtMemorare &= validareCamp;
+        if (!validareCamp) {
+          afisareEroareCamp += " , 'Data Nasterii' ";
+        }
+        validareCamp = validareDateExistenteInCampuri(obiect.email);
+        validareObiectPtMemorare &= validareCamp;
+        if (!validareCamp) {
+          afisareEroareCamp += " , 'Email' ";
+        }
+        validareCamp = validareNumar(obiect.nrTelefon);
+        validareObiectPtMemorare &= validareCamp;
+        if (!validareCamp) {
+          afisareEroareCamp += " , 'Numar Telefon' ";
+        }
+        validareCamp = validareDateExistenteInCampuri(obiect.adresa);
+        validareObiectPtMemorare &= validareCamp;
+        if (!validareCamp) {
+          afisareEroareCamp += " , 'Adresa' ";
+        }
+
+        if (validareObiectPtMemorare) {
+          arrayPersoane[arrayPersoane.length] = obiect;
+          document.getElementById("divMesajEroareForm").innerHTML = "";
+          console.log(validareObiectPtMemorare === 1);
+        } else {
+          document.getElementById("divMesajEroareForm").innerHTML =
+            "Date lipsa sau introduse gresit in campul : " +
+            afisareEroareCamp +
+            " ";
+
+          document.getElementById("idDiv").innerHTML = "";
+        }
+      }
+
+      // pt nume functie corect,intreaba functia : " Ce faci ?" ,iar raspunsul este numele functiei ?!
+
+      function validareNumeSiPrenume(dataFormular) {
+        return dataFormular != 0 && isNaN(dataFormular);
+      }
+      function validareNumar(dataFormular) {
+        return dataFormular.length != 0 && !isNaN(dataFormular);
+      }
+      function validareDateExistenteInCampuri(dataFormular) {
+        return dataFormular.length != 0;
+      }
+
+      function iaTermenDeCautare() {
+        let date_persoana = document.getElementById("fcautaInAgenda").value;
+        return date_persoana;
+      }
+
+      function afisarePersoana(persoana) {
+        let strin = " ";
+        strin =
+          persoana.nume +
+          "\n" +
+          persoana.prenume +
+          "\n" +
+          persoana.dataNasterii +
+          "\n" +
+          persoana.nrTelefon +
+          "\n" +
+          persoana.email +
+          "\n" +
+          persoana.adresa +
+          "\n" +
+          "\n";
+        return strin;
+      }
+      function afiseazaToatePersoanlele() {
+        let container = document.getElementById("divSugestii");
+        let agenda = "";
+        if (arrayPersoane != 0) {
+          for (let x = 0; x < arrayPersoane.length; x++) {
+            agenda += afisarePersoana(arrayPersoane[x]);
+          }
+          document.getElementById("idDiv").innerHTML = agenda;
+          container.scrollIntoView();
+        } else {
+          document.getElementById("idDiv").innerHTML =
+            " Agenda nu contine nici un contact ";
+        }
+      }
+
+      function cautaPersoane(termen_cautare) {
+        let persoaneGasite = [];
+        for (let x = 0; x < arrayPersoane.length; x++) {
+          if (
+            (arrayPersoane[x].nume != null &&
+              arrayPersoane[x].nume.toLowerCase().indexOf(termen_cautare) ==
+                0) ||
+            (arrayPersoane[x].prenume != null &&
+              arrayPersoane[x].prenume.toLowerCase().indexOf(termen_cautare) ==
+                0) ||
+            (arrayPersoane[x].dataNasterii != null &&
+              arrayPersoane[x].dataNasterii
+                .toLowerCase()
+                .indexOf(termen_cautare) == 0) ||
+            (arrayPersoane[x].nrTelefon != null &&
+              arrayPersoane[x].nrTelefon
+                .toLowerCase()
+                .indexOf(termen_cautare) == 0) ||
+            (arrayPersoane[x].email != null &&
+              arrayPersoane[x].email.toLowerCase().indexOf(termen_cautare) ==
+                0) ||
+            (arrayPersoane[x].adresa != null &&
+              arrayPersoane[x].adresa.toLowerCase().indexOf(termen_cautare) ==
+                0)
+          ) {
+            persoaneGasite[persoaneGasite.length] = arrayPersoane[x];
+          }
+        }
+        return persoaneGasite;
+      }
+
+      function listaSugestii(termen_cautare) {
+        let arrayNou = [];
+        let container = document.getElementById("divSugestii");
+        let arrayPersoneGasite = cautaPersoane(termen_cautare);
+        for (let x = 0; x < arrayPersoneGasite.length; x++) {
+          let elementSugestie = document.createElement("div");
+          elementSugestie.innerText =
+            arrayPersoneGasite[x].nume + " " + arrayPersoneGasite[x].prenume;
+          elementSugestie.className = "dropdown";
+          arrayNou[x] = elementSugestie; // pun "div -urile" create intr-un array
+          console.log(elementSugestie);
+          console.log(container);
+          elementSugestie.addEventListener("click", function () {
+            container.innerHTML = "";
+            if (elementSugestie.innerText == arrayNou[x].innerText) {
+              let a = afisarePersoana(arrayPersoneGasite[x]);
+              document.getElementById("idDiv").innerHTML = a;
+              container.scrollIntoView();
+            }
+          });
+        }
+        container.replaceChildren(...arrayNou);
+        container.scrollIntoView();
+      }
+      function afiseazaPersoanaAferentaLitereiSelectate(litera) {
+        //in functia asta caut doar dupa obiect.nume
+        let container = document.getElementById("divSugestii");
+        let q = false;
+        let w = "";
+        let literaSelectata = litera.innerHTML.toLowerCase();
+        console.log(litera.innerHTML);
+        for (let x = 0; x < arrayPersoane.length; x++) {
+          if (
+            arrayPersoane[x].nume.toLowerCase().indexOf(literaSelectata) == 0 ||
+            arrayPersoane[x].prenume.toLowerCase().indexOf(literaSelectata) == 0
+          ) {
+            w += afisarePersoana(arrayPersoane[x]);
+            q = true;
+          }
+        }
+        if (q) {
+          document.getElementById("idDiv").innerHTML =
+            "Se afiseaza rezultate pentru : " +
+            "'" +
+            litera.innerHTML +
+            "'" +
+            "\n" +
+            "\n" +
+            w;
+          document.getElementById("idAfisareMesajEroareAlfebet").innerHTML = "";
+          container.scrollIntoView();
+        } else {
+          document.getElementById("idAfisareMesajEroareAlfebet").innerHTML =
+            " Persoana nu exista ";
+          document.getElementById("idDiv").innerHTML = "";
+        }
+      }
+
+      function afiseazaForm() {
+        let formularDeschis = document.getElementById("form_id");
+        formularDeschis.className = "afiseaza_container";
+      }
+      function inchiideForm() {
+        let formularInchis = document.getElementById("form_id");
+        formularInchis.className = "ascunde_container";
+      }
+      function afiseazaAlfabetul() {
+        let alfabetDeschis = document.getElementById("divLitere");
+        alfabetDeschis.className = "afiseaza_container";
+      }
+      function inchideAlfabetul() {
+        let alfabetInchis = document.getElementById("divLitere");
+        alfabetInchis.className = "ascunde_container";
+      }
+      //let adresaBara = window.location.search; // asa iau adresa din URL
+      //alert(adresaBara);
+      //       <br />
+      //     QS: @Request.Query["fname"].ToString() @Request.Query["lname"].ToString()
+      // <br />
+      //     Payload: @Request.Form["fname"].ToString() @Request.Form["lname"].ToString()
+    </script>
+  </head>
+  <body>
+    <h5>
+      <img src="contact-book-icon-21.jpg" width="50%" height="250px" />
+    </h5>
+
+    <strong
+      ><a href="C:/Proiecte HTML+JAVASCRIPT/PROBA HTML/PROBA.html"
+        >link PROBA - adresa absoluta</a
+      ></strong
+    >
+    <strong
+      ><a href="/Proiecte HTML+JAVASCRIPT/PROBA HTML/PROBA.html"
+        >link PROBA - adresa relativa</a
+      ></strong
+    >
+    <br />
+    <button class="style_buton" type="button" onclick="afiseazaForm()">
+      Introdu contact
+    </button>
+    <br />
+    <form
+      action=""
+      method="POST"
+      enctype="multipart/form-data"
+      id="form_id"
+      class="ascunde_container"
+    >
+      <br />
+      <div class="partea_stanga">
+        <label for="fnume"
+          >Nume <span style="color: rgb(254, 31, 31)">*</span></label
+        ><br />
+        <input
+          type="text"
+          id="fnume"
+          name="fname"
+          placeholder="nume"
+          class="imput_style_stanga"
+        />
+      </div>
+
+      <div class="partea_dreapta">
+        <label for="fprenume"
+          ><span style="color: rgb(254, 31, 31)">*</span> Prenume </label
+        ><br />
+        <input
+          type="text"
+          id="fprenume"
+          name="fprenume"
+          placeholder="prenume"
+          class="imput_style_dreapta"
+        />
+      </div>
+
+      <br /><br /><br /><br />
+
+      <div class="partea_stanga">
+        <label for="fdataNasterii"
+          >Data Nasterii <span style="color: rgb(254, 31, 31)">*</span> </label
+        ><br />
+        <input
+          type="date"
+          id="fdataNasterii"
+          name="fdataNasterii"
+          class="imput_style_stanga"
+        />
+      </div>
+
+      <div class="partea_dreapta">
+        <label for="fnrTelefon"
+          ><span style="color: rgb(254, 31, 31)">*</span> Numar telefon </label
+        ><br />
+
+        <input
+          type="tel"
+          id="fnrTelefon"
+          name="fnrTelefon"
+          placeholder="074xxxxxxx"
+          maxlength="10"
+          class="imput_style_dreapta"
+        />
+      </div>
+
+      <br /><br /><br /><br />
+
+      <div class="partea_stanga">
+        <label for="femail"
+          >Email <span style="color: rgb(254, 31, 31)">*</span></label
+        ><br />
+        <input
+          type="email"
+          id="femail"
+          name="femail"
+          placeholder="email@yahoo.com"
+          class="imput_style_stanga"
+        />
+      </div>
+      <div class="partea_dreapta">
+        <label for="fadresa"
+          ><span style="color: rgb(254, 31, 31)">*</span> Adresa </label
+        ><br />
+        <input
+          type="text"
+          id="fadresa"
+          name="fadresa"
+          placeholder="str,nr,loc,jud"
+          class="imput_style_dreapta"
+        />
+      </div>
+      <br /><br /><br />
+      <div style="color: crimson">
+        *<span style="color: black">Campuri obligatorii</span>
+      </div>
+      <div id="divMesajEroareForm" class="centrare"></div>
+      <br />
+      <div>
+        <button class="style_buton" type="submit" onclick="submitForm()">
+          Submit
+        </button>
+        <button class="style_buton" type="button" onclick="inchiideForm()">
+          Inchide Form
+        </button>
+      </div>
+    </form>
+
+    <br />
+
+    <button class="style_buton" type="button" onclick="afiseazaAlfabetul()">
+      Afiseaza alfabetul
+    </button>
+
+    <div id="divLitere" class="ascunde_container">
+      <br />
+      <span
+        id="a"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >A</span
+      >&nbsp;&nbsp;
+      <span
+        id="b"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >B</span
+      >&nbsp;&nbsp;
+      <span
+        id="c"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >C</span
+      >&nbsp;&nbsp;
+      <span
+        id="d"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >D</span
+      >&nbsp;&nbsp;
+      <span
+        id="e"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >E</span
+      >&nbsp;&nbsp;
+      <span
+        id="f"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >F</span
+      >&nbsp;&nbsp;
+      <span
+        id="g"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >G</span
+      >&nbsp;&nbsp;
+      <span
+        id="h"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >H</span
+      >&nbsp;&nbsp;
+      <span
+        id="i"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >I</span
+      >&nbsp;&nbsp;
+      <span
+        id="j"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >J</span
+      >&nbsp;&nbsp;
+      <span
+        id="k"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >K</span
+      >&nbsp;&nbsp;
+      <span
+        id="l"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >L</span
+      >&nbsp;&nbsp;
+      <span
+        id="m"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >M</span
+      >&nbsp;&nbsp;
+      <span
+        id="n"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >N</span
+      >&nbsp;&nbsp;
+      <span
+        id="o"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >O</span
+      >&nbsp;&nbsp;
+      <span
+        id="p"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >P</span
+      >&nbsp;&nbsp;
+      <span
+        id="q"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >Q</span
+      >&nbsp;&nbsp;
+      <span
+        id="r"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >R</span
+      >&nbsp;&nbsp;
+      <span
+        id="s"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >S</span
+      >&nbsp;&nbsp;
+      <span
+        id="t"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >T</span
+      >&nbsp;&nbsp;
+      <span
+        id="u"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >U</span
+      >&nbsp;&nbsp;
+      <span
+        id="v"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >V</span
+      >&nbsp;&nbsp;
+      <span
+        id="w"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >W</span
+      >&nbsp;&nbsp;
+      <span
+        id="x"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >X</span
+      >&nbsp;&nbsp;
+      <span
+        id="y"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >Y</span
+      >&nbsp;&nbsp;
+      <span
+        id="z"
+        class="litera"
+        onclick="afiseazaPersoanaAferentaLitereiSelectate(this)"
+        >Z</span
+      >&nbsp; <br /><br />
+      <div id="idAfisareMesajEroareAlfebet" class="centrare"></div>
+      <br />
+      <button class="style_buton" type="button" onclick="inchideAlfabetul()">
+        Inchide Alfabetul
+      </button>
+    </div>
+    <br />
+    <br />
+    <button
+      class="style_buton"
+      type="button"
+      onclick="afiseazaToatePersoanlele()"
+    >
+      Toate contactele
+    </button>
+    <br />
+    <br />
+    <br />
+    <div class="divCautare">
+      <div class="centrareDivCasutaCautare" id="idDivParinte">
+        <input
+          type="text"
+          id="idCasutaCautare"
+          placeholder="Sugestii de cautare"
+          class="input_casuta"
+          oninput="listaSugestii(this.value)"
+        />
+        <div class="divSuprapus">
+          <div class="div_sugestii" id="divSugestii"></div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div>
+      <div id="idDiv" class="div_casuta_cautare"></div>
+    </div>
+    <pre id="pre_id"></pre>
+  </body>
+</html>
